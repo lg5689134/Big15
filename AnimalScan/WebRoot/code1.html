@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <style>
+            .slide-captcha-area{
+                width: 100%;
+                text-align: center;
+                -webkit-user-select: none;
+            }
+            .slide-captcha{
+                width: 325px;
+                height: 30px;
+                margin: 0 auto;
+                background: #7AC439;
+                line-height: 30px;
+                border:1px solid #ccc;
+            }
+            .slide-block{
+                width: 35px;
+                background: #e8e8e8;
+                z-index: 100;
+                position: relative;
+                cursor: move;
+                color: #bbb;
+            }
+            .slide-text{
+                background:-webkit-gradient(linear,left top,right top,color-stop(0,#4d4d4d),color-stop(.4,#4d4d4d),color-stop(.5,#fff),color-stop(.6,#4d4d4d),color-stop(1,#4d4d4d));
+                width: inherit;
+                position: absolute;
+                margin-top:-30px;
+                text-align: center;
+                z-index: 88;
+                -webkit-background-clip:text;
+                -webkit-text-fill-color:transparent;
+                -webkit-animation:slide-text 3s infinite;
+                -webkit-text-size-adjust:none;
+            }
+            @-webkit-keyframes slide-text{0%{background-position:-200px 0} 100%{background-position:200px 0}}
+        </style>
+    </head>
+    <body>
+        <div class="slide-captcha-area">
+            <h2>仿支付宝滑动验证码案例</h2>
+            <div class="slide-captcha">
+                <div class="slide-block">›››</div>
+                <div class="slide-text">请按住滑块，拖动到最右边</div>
+            </div>
+        </div>
+        <script src="js/jquery.min.js"></script>
+        <script>
+            $(function(){
+                var _this,left_val,step = 10,is_pass = false;
+                $('.slide-block').hover(function() {
+                    _this = this;
+                    var width = $(_this).width();
+                    var slide_captcha_width = $('.slide-captcha').width();
+                    var slide_captcha_offset_left = $('.slide-captcha').offset().left;
+                    var old_left_val = $(_this).offset().left;
+                    $(_this).mousedown(function() {
+                        $(document).mousemove(function(event) {
+                            left_val = $(_this).offset().left + step;
+                            console.log(slide_captcha_offset_left);
+                            if(left_val + width <= slide_captcha_offset_left + slide_captcha_width + 1){
+                                $(_this).offset({'left':left_val});
+                            }else{
+                                is_pass = true;//验证通过
+                                $('.slide-text').html('验证通过');
+                                $('.slide-block').html('√');
+                            }
+                        });
+                        $(document).mouseup(function() {
+                            if(!is_pass){
+                                $(_this).offset({'left':old_left_val});
+                            }
+                            $(document).unbind('mousemove');
+                        })
+                    });
+                    
+                }, function() {
+                    $(_this).unbind('mousedown mouseover');
+                });
+            })
+        </script>
+    </body>
+</html>

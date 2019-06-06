@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>扫一扫</title>
+	<meta charset="utf-8">
+    <meta name="keywords" content="keyword1,keyword2,keyword3">
+    <meta name="description" content="this is my page">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.qrcode-logo.js"></script>
+	<script type="text/javascript" src="../js/speech-sound.js"></script>
+  </head>
+  
+  <body>
+	<center>
+     <br/><br/>
+		<h3>请使用手机扫一扫</h3></br/>
+     	<div id="qrcode"></div><br/>
+     	 <a href="javascript:void(0);" onclick="javascript:location.reload();">刷新试试</a>
+     </center>
+     <script type="text/javascript">
+     var token;
+     //获取token
+     $.get("../genToken",function (data){
+     	if(!!data){
+       		token=data;
+       		console.log("token:"+token);
+       		//生成二维码
+       		$("#qrcode").qrcode({
+		     	render:"canvas",//设置渲染方式，有table和canvas，使用canvas方式渲染性能相对来说比较好
+				width:200,//二维码宽
+				height:200,//二维码高
+				//correctLevel:0,//容错级别对象  L : 1, M : 0,Q : 3, H : 2,默认是H,最好使用高级别，否则扫描比较困难
+				text:"http://192.168.1.118:8888/AnimalScan/scan/login.html?token=" + token,//内容
+				background:"#ffffff",//白色，二维码的后景色
+				foreground:"#000000",//黑色，二维码的前景色
+		     	src:"logo.png"//中间logo
+	     });
+	     
+	     //验证登录,实现自动登录
+	     autoLogin(token);
+	     
+       }else{
+       	alert("请刷新下页面或稍后再试...");
+       }
+     });
+	  
+	  function autoLogin(token){
+	     if(!!token){
+			  $.post("../scanLogin",{token:token},function (data){
+			   if(!!data){
+			    var json=eval("("+data+")");
+			    var userName=json.userName;
+			     console.log("scanlogin:"+userName);
+			     if(!!userName){  //登录成功返回首页
+			    	window.location.href="../animal/index.html?userName="+userName;
+			  	   }else{
+			  	   //递归调用
+			  	    autoLogin(token);
+			  	   }
+			   }
+			 });
+		  }
+	  }
+
+	  //ajax定时扫描自动登录,每秒一次
+	 /*  var t=setInterval(function (){
+		  console.log("time:"+token);
+		  if(!!token){
+			  $.post("../scanLogin",{token:token},function (data){
+			   if(!!data){
+			    var json=eval("("+data+")");
+			    var userName=json.userName;
+			    //alert("scanlogin:"+userName);
+			    console.log("scanlogin:"+userName);
+			     if(!!userName){
+			     	//登录成功,停止定时器
+		  			clearInterval(t);
+			    	window.location.href="../animal/index.html?userName="+userName;
+			  	   }
+			   }
+			 });
+		  }
+		    
+	  }, 1000); */
+	     //语音提示//兼容微信及各种常见的浏览器	 
+		sound("请扫描二维码，如无法扫描请刷新后再试");
+	 </script>
+
+  </body>
+</html>

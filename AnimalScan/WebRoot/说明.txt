@@ -1,0 +1,27 @@
+	1、新建web项目
+	
+	2、在webRoot-scan文件下新建扫码首页面,用于展示二维码
+	引入相关js,ajax获取token，根据token生成二维码提供手机扫码登录
+	
+	3、新建servlet用于生成token,token唯一标识，不能重复，可以使用UUID
+	如： UUID.randomUUID()
+	
+	4、新建javaBean用于存放静态HashSet(token)和HashMap(token,userName)
+	并且将token存放到static HashSet集合中，如果考虑多线程，使用Collections.synchronizedSet
+	如：Collections.synchronizedSet(new HashSet<String>());
+	，如果考虑多线程 HashMap 可以用ConcurrentHashMap代替
+	如： new ConcurrentHashMap<String,String>();
+	
+	5、新建登录页面，用于手机端，绑定token和userName
+	
+	6、新建登录servlet,用于手机端，绑定token和userName关系
+	
+	7、修改扫描页面，添加自动登录定时代码，调用后台自动登录逻辑
+	
+	8、新建自动登录扫描servlet,用于pc端自动检测，根据token获取用户名，
+	如果有用户名，进行解除token和用户之间的绑定，删除内存中set和map中对应的数据。
+	
+	9、进入欢迎页面,动物识别或果蔬识别页面，设计简单的表格页面，点击图片或查看按钮可以获取动物名称并且进行语音提醒
+	
+	10、新建动物识别servlet，获取页面图片路径，调用baidu人工智能接口，后台服务端进行业务处理
+	在使用api接口时注意，首先要在ai.baidu.com注册相关的应用，获取token，appkey，appsecret 

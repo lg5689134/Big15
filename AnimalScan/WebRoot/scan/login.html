@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>确认登录</title>
+	<meta charset="utf-8">
+    <meta name="keywords" content="keyword1,keyword2,keyword3">
+    <meta name="description" content="this is my page">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.param.js"></script>
+    <script type="text/javascript" src="../js/speech-sound.js"></script>
+    <style type="text/css">
+    body{
+     background: #ffffc0;
+    }
+    .loginClass{
+	    font-size: 20px;
+	    width:400px;
+	    height:300px;
+	    text-align: center;
+	    background: #ccccc0;
+    }
+   .inputText{
+     width: 200px;
+     height:25px;
+    }
+    .btnClass{
+    width: 65px;
+    height:28px;
+    background:#55cccc;
+    border:none;
+    font-size: 18px;
+    }
+    </style>
+  </head>
+  <body><br/><br/><br/>
+  <center>
+  <h1>用户确认登录</h1>
+  <div class="loginClass"><br/>
+        <p>
+            <span>名称：</span>
+            <input type="text" id="login_name" class="inputText" value="unique" >
+        </p>
+        <br/>
+        <p>
+            <span>密码：</span>
+            <input type="password" id="login_psw"  class="inputText" value="*****">
+        </p><br/>
+        <div>
+            <button  onclick="login()" class="btnClass">登录</button>
+        </div>
+    </div>
+    </center>
+    <script type="text/javascript">
+	   function login(){
+	      var token=$.getUrlParam("token");
+    	  var userName=$("#login_name").val();
+    	  //ajax请求后台去登录
+    	  $.post("../tologin",{token:token,userName:userName},function (data){
+    	    if(!!data){
+    	    	var json=eval("("+data+")");
+			    var uname=json.userName;
+			     //alert("login-uname:"+uname);
+    	        if(!!uname){
+    	       		//登录成功
+    	       		window.location.href="../animal/index.html?userName="+uname;
+    	        }else{
+    	         	alert("用户名不存在或token错误");
+    	        }
+    	    }
+    	   });
+     }
+     //语音提示
+	  sound("请确认登录");
+    </script>
+  </body>
+</html>

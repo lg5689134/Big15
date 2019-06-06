@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>语音识别</title>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/HZRecorder.js"></script>
+<style type="text/css">
+body{
+	text-align:center;
+	margin: 0 auto;
+}
+a{
+  text-decoration:none;
+  cursor:pointer;
+}
+audio{
+	margin-top:15px;
+}
+
+</style>
+</head>
+<body>
+    <img src="../img/wenzi.png" class="wenzi">
+    <img src="../img/wenzi2.png" class="wenzi2" style="display:none;margin-top:5px;">
+    <br>
+    <a onclick="startRecording()" class="change" title="点击开始"><img src="../img/index.png" style="margin-top:35px;"></a>
+    <a onclick="stopRecording()" class="change3" title="点击停止"><img src="../img/speek.png" ></a><br>
+    <a onclick="playRecording()" class="change4" title="点击播放" style="border: none;"><img src="../img/play.png" ></a><br>   
+    <audio controls autoplay></audio>
+    <script type="text/javascript">
+    $(function (){
+        	$(".change").show();
+        	$(".change3").hide();
+        	$(".change4").hide();
+	 });    
+        var recorder;		
+        var audio = document.querySelector('audio');
+        function startRecording() {
+            $(".change3").show();
+            $(".wenzi").hide();
+            $(".wenzi2").show();
+            $(".change").hide();
+            HZRecorder.get(function (rec) {
+                recorder = rec;
+                recorder.start();
+               // setTimeout("stopRecording()",6100); 
+               //setTimeout("uploadAudio()",6100);
+            });                       
+        }
+        
+        function stopRecording() {
+            $(".wenzi").hide();
+        	$(".wenzi2").hide();
+        	$(".change2").hide();
+        	$(".change3").hide();
+            recorder.stop();
+            uploadAudio();
+            $(".change4").show();
+        }
+
+        function playRecording() {
+           recorder.play(audio);
+        }
+
+        function uploadAudio() {
+            recorder.upload("../uploadVideo", function (state, e) {
+                switch (state) {
+                    case 'uploading':
+                        //var percentComplete = Math.round(e.loaded * 100 / e.total) + '%';
+                        break;
+                    case 'ok':
+                          //alert(e.target.responseText);
+                          alert("上传成功");
+                          window.location.href="../videoAnalyze";
+                        break;
+                    case 'error':
+                        alert("上传失败");
+                        break;
+                    case 'cancel':
+                        alert("上传被取消");
+                        break;
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
